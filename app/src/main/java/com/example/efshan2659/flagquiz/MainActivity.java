@@ -112,28 +112,37 @@ public class MainActivity extends AppCompatActivity {
 
                     MainActivityFragment quizFragment = (MainActivityFragment)
                         getSupportFragmentManager().findFragmentById(
-                                R.id.quizFragment);
-                }
-                else if (key.equals(REGIONS)) { // regions to include changed
-                    Set<String> regions =
-                            sharedPreferences().getStringSet(REGIONS, null);
+                            R.id.quizFragment);
 
-                    if (regions != null && regions.size() > 0) {
-                        quizFragment.updateRegions(sharedPreferences);
+                    if (key.equals(CHOICES)) {
+                        quizFragment.updateGuessRows(sharedPreferences);
                         quizFragment.resetQuiz();
                     }
-                    else {
-                        // must select one region--set North America as default
-                        SharedPreferences.Editor editor =
-                            sharedPreferences.edit();
-                        regions.add(getString(R.string.default_region));
-                        editor.putStringSet(REGIONS, regions);
-                        editor.apply();
+                    else if (key.equals(REGIONS)) { // regions to include changed
+                        Set<String> regions =
+                            sharedPreferences.getStringSet(REGIONS, null);
+
+                        if (regions != null && regions.size() > 0) {
+                            quizFragment.updateRegions(sharedPreferences);
+                            quizFragment.resetQuiz();
+                        }
+                        else {
+                            // must select one region--set North America as default
+                            SharedPreferences.Editor editor =
+                                sharedPreferences.edit();
+                            regions.add(getString(R.string.default_region));
+                            editor.putStringSet(REGIONS, regions);
+                            editor.apply();
+
+                            Toast.makeText(MainActivity.this,
+                                R.string.default_region_message,
+                                Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     Toast.makeText(MainActivity.this,
-                            R.string.restarting_quiz,
-                            Toast.LENGTH_SHORT).show();
+                        R.string.restarting_quiz,
+                        Toast.LENGTH_SHORT).show();
                 }
-            };
+    };
 }
