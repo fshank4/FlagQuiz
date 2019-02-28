@@ -12,7 +12,6 @@ import java.util.Set;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -46,7 +45,7 @@ public class MainActivityFragment extends Fragment {
     private List<String> quizCountriesList; // countries in current quiz
     private Set<String> regionsSet; // world regions in current quiz
     private String correctAnswer; // number of correct guesses
-    private int totalGuesses; // number of guesses made
+    private static int totalGuesses; // number of guesses made
     private int correctAnswers; // number of correct guesses
     private int guessRows; // number of rows displaying guess buttons
     private SecureRandom random; // used to randomize quiz
@@ -306,32 +305,8 @@ public class MainActivityFragment extends Fragment {
                 //if the user has correctly identified FLAGS_IN_QUIZ flags
                 if (correctAnswers == FLAGS_IN_QUIZ) {
                     // DialogFragment to display quiz stats and start new quiz
-                    @SuppressLint("ValidFragment")
                     DialogFragment quizResults =
-                        new DialogFragment() {
-                        // create an AlertDialog and return it
-                            @Override
-                            public Dialog onCreateDialog(Bundle bundle) {
-                                AlertDialog.Builder builder =
-                                        new AlertDialog.Builder(getActivity());
-                                builder.setMessage(
-                                        getString(R.string.results,
-                                        totalGuesses,
-                                        (1000 / (double) totalGuesses)));
-
-                                // "Reset Quiz" Button
-                                builder.setPositiveButton(R.string.reset_quiz,
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog,
-                                                                int id) {
-                                                resetQuiz();
-                                            }
-                                        }
-                                        );
-
-                                return builder.create(); // return the AlertDialog
-                            }
-                        };
+                        new QuizResults();
 
                     // use FragmentManager to display the DialogFragment
                     quizResults.setCancelable(false);
@@ -366,6 +341,31 @@ public class MainActivityFragment extends Fragment {
             LinearLayout guessRow = guessLinearLayouts[row];
             for (int i = 0; i < guessRow.getChildCount(); i++)
                 guessRow.getChildAt(i).setEnabled(false);
+        }
+    }
+
+    public static class QuizResults extends DialogFragment {
+        // create an AlertDialog and return it
+        @Override
+        public Dialog onCreateDialog(Bundle bundle) {
+            AlertDialog.Builder builder =
+                    new AlertDialog.Builder(getActivity());
+            builder.setMessage(
+                    getString(R.string.results,
+                            totalGuesses,
+                            (1000 / (double) totalGuesses)));
+
+            // "Reset Quiz" Button
+            builder.setPositiveButton(R.string.reset_quiz,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int id) {
+                            // resetQuiz();
+                        }
+                    }
+            );
+
+            return builder.create(); // return the AlertDialog
         }
     }
 }
